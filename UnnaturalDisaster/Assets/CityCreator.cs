@@ -6,10 +6,10 @@ public class CityCreator : MonoBehaviour {
 
     public Material materialSkyscraper;
 
-    void MakeBuilding(int floors, float baseSize)
+    void MakeBuilding(float x, float y, int floors, float baseSize)
     {
         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube.transform.position = new Vector3(0, floors * FloorHeight / 2.0f, baseSize);
+        cube.transform.position = new Vector3(x, floors * FloorHeight / 2.0f, y);
         cube.transform.localScale = new Vector3(baseSize, floors * FloorHeight, baseSize);
 
         Material m = new Material(materialSkyscraper);
@@ -21,9 +21,14 @@ public class CityCreator : MonoBehaviour {
     void MakeBlock()
     {
         // We have an area of 200x80 we need to fill. The max height of buildings is exponential up to 500m or so, random based on distance from center.
-        int floors = 10;
         float baseSize = 50.0f; //m
+        int floors = (int)Mathf.Round(Random.Range(50, 300) / 3.0f);
+        // @100 stories, 50m, @1 stories 10m
 
+        MakeBuilding(0.0f, 0.0f, floors, baseSize);
+        MakeBuilding(0.0f, 50.0f, floors, baseSize);
+        MakeBuilding(50.0f, 0.0f, floors, baseSize);
+        MakeBuilding(50.0f, 50.0f, floors, baseSize);
     }
 
 	// Use this for initialization
