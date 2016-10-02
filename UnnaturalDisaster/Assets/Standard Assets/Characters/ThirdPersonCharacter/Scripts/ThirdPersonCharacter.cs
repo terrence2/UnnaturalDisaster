@@ -16,6 +16,12 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		[SerializeField] float m_AnimSpeedMultiplier = 1f;
 		[SerializeField] float m_GroundCheckDistance = 0.1f;
 
+        [Range(1f, 100f)]
+        [SerializeField]
+        float m_Scale = 1f;
+
+        private float m_LastScale = 1f;
+
 		Rigidbody m_Rigidbody;
 		Animator m_Animator;
 		bool m_IsGrounded;
@@ -43,13 +49,20 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		}
 
 
-		public void Move(Vector3 move, bool crouch, bool jump)
+		public void Move(Vector3 move, bool crouch, bool jump, float scaleChange)
 		{
+            if (scaleChange != 0f)
+            {
+                m_Scale += m_Scale * scaleChange;
+                m_Scale = Mathf.Min(100f, Mathf.Max(1f, m_Scale));
+                GetComponent<Transform>().localScale = new Vector3(m_Scale, m_Scale, m_Scale);
+            }
 
-			// convert the world relative moveInput vector into a local-relative
-			// turn amount and forward amount required to head in the desired
-			// direction.
-			if (move.magnitude > 1f) move.Normalize();
+            // convert the world relative moveInput vector into a local-relative
+            // turn amount and forward amount required to head in the desired
+            // direction.
+            //if (move.magnitude > 1f)
+            //    move.Normalize();
 			move = transform.InverseTransformDirection(move);
 			CheckGroundStatus();
 			move = Vector3.ProjectOnPlane(move, m_GroundNormal);
@@ -143,7 +156,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			// which affects the movement speed because of the root motion.
 			if (m_IsGrounded && move.magnitude > 0)
 			{
-				m_Animator.speed = m_AnimSpeedMultiplier;
+				m_Animator.speed = m_AnimSpeedMultiplier * move.magnitude;
 			}
 			else
 			{

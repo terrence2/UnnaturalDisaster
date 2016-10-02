@@ -77,13 +77,13 @@ public class ThirdPersonOrbitCamera : MonoBehaviour
 
 		if(playerControl.IsAiming())
 		{
-			targetPivotOffset = aimPivotOffset;
-			targetCamOffset = aimCamOffset;
+			targetPivotOffset = aimPivotOffset * player.localScale.x;
+			targetCamOffset = aimCamOffset * player.localScale.x;
 		}
 		else
 		{
-			targetPivotOffset = pivotOffset;
-			targetCamOffset = camOffset;
+			targetPivotOffset = pivotOffset * player.localScale.x;
+			targetCamOffset = camOffset * player.localScale.x;
 		}
 
 		if(playerControl.IsSprinting())

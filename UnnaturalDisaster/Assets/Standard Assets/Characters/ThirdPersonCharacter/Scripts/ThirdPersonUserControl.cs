@@ -20,7 +20,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         public bool IsAiming() { return m_Aiming; }
         public bool IsSprinting() { return m_Sprinting; }
         public bool IsFlying() { return m_Flying; }
-        
+
         private void Start()
         {
             // get the transform of the main camera
@@ -46,6 +46,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             {
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
             }
+
+            m_Sprinting = Input.GetKey(KeyCode.LeftShift);
+            //m_Flying = Input.GetKey(KeyCode.Space);
         }
 
 
@@ -55,6 +58,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             // read inputs
             float h = CrossPlatformInputManager.GetAxis("Horizontal");
             float v = CrossPlatformInputManager.GetAxis("Vertical");
+            float s = CrossPlatformInputManager.GetAxis("Mouse ScrollWheel");
             bool crouch = Input.GetKey(KeyCode.C);
 
             // calculate move direction to pass to character
@@ -71,11 +75,16 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             }
 #if !MOBILE_INPUT
 			// walk speed multiplier
-	        if (Input.GetKey(KeyCode.LeftShift)) m_Move *= 0.5f;
+	        if (Input.GetKey(KeyCode.LeftAlt))
+                m_Move *= 0.5f;
+            // run speed multiplier
+            if (Input.GetKey(KeyCode.LeftShift))
+                m_Move *= 2.0f;
 #endif
+            m_Aiming = CrossPlatformInputManager.GetButtonDown("Fire2");
 
             // pass all parameters to the character control script
-            m_Character.Move(m_Move, crouch, m_Jump);
+            m_Character.Move(m_Move, crouch, m_Jump, s);
             m_Jump = false;
         }
     }
